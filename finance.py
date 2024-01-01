@@ -6,12 +6,12 @@ import plotly.express as px
 from alpha_vantage.fundamentaldata import FundamentalData
 from stocknews import StockNews as SN
 
-st.title('Stock Dashboard')
+st.title('Stock Finance Dashboard')
 ticker = st.sidebar.text_input('Ticker')
 startdate = st.sidebar.date_input('Start Date')
 enddate = st.sidebar.date_input("End Date")
 
-data = yf.download(ticker,startdate,enddate)
+data = yf.download(ticker,start=startdate,end=enddate)
 fig = px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
 st.plotly_chart(fig)
 
@@ -24,10 +24,7 @@ with pricingData:
     data2.dropna(inplace=True)
     st.write(data2)
     annualReturn = data2['% Change'].mean()*252*100
-    st.write('Annual Return is ',annualReturn,'%')
-    stddev = np.std(data2['% Change'])*np.sqrt(252)
-    st.write('Standard Deviation is ',stddev*100,'%')
-    st.write('Risk Adj. Return is ', annualReturn/(stddev*100))
+    st.write('Annual Return is ',round(annualReturn,2),'%')
 
 
 with fundamentalData:
@@ -58,8 +55,3 @@ with news:
         st.write(dfNews['published'][i])
         st.write(dfNews['title'][i])
         st.write(dfNews['summary'][i])
-        titleSentiment = dfNews['sentiment_title'][i]
-        st.write(f"Title Sentiments {titleSentiment}")
-        newsSentiment = dfNews['sentiment_summary'][i]
-        st.write(f"News Sentiments {newsSentiment}")
-
